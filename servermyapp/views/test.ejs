@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>WTF</h1>
+
+    <div class="jumbotron jumbotron-fluid mb-5">
+        
+        <div class="container text-center py-5">
+            <h1 class="text-primary mb-4">Search for Professionals</h1>
+            <h1 class="text-white display-3 mb-5">What do you need today?</h1>
+            <!-- <div  class="mx-auto" style="width: 100%; max-width: 400px;" >
+                 <div class="input-group" >
+                    <input type="text" class="form-control border-light" style="padding: 30px;" placeholder="Type your zipcode or Address" >
+                    <div class="input-group-append">
+                        <button id="idk" class="btn btn-primary px-3">Track & Trace</button>
+                    </div>
+                </div>
+                <div class="input-group" >
+                    <input  type="text" class="form-control border-light" style="padding: 30px;" placeholder="Type your zipcode or Address">
+                    
+                </div> -->
+               
+             </div> 
+           <input  placeholder="Input your Zipcode or Address" style="height: 70px;  width: 300px; max-width: 300px;"  type="text">
+           <input  placeholder="Input your budget" style="height: 70px; width: 300px; max-width: 300px;" type="text">
+           <select id="drop" style="height: 70px; width: 300px; max-width: 300px;" >
+                <option>All Services</option>
+                <option>Handiwork</option>
+                <option>Painting</option>
+                <option>Decks</option>
+                <option>Electrical</option>
+                <option>Plumbing</option>
+                <option>Plaster &amp; Drywall</option>
+                <option>Flooring</option>
+                <option>Kitchen Design</option>
+                <option>Welding</option>
+            </select>
+           <a href="http://localhost:8000/search"> <button  id="button" style="height: 50px; width: 200px; max-width: 300px;"  class="btn btn-primary px-3">Search</button></a>
+        </div>
+    </div>   
+
+     <!-- <section data-position="quotes">
+        <h2>Quotes</h2>
+  
+        <ul class="quotes">
+          <% for(var i = 0; i < quotes.length; i++) {%>
+          <li class="quote">
+            <span><%= quotes[i].name %></span>:
+            <span><%= quotes[i].job %></span>
+          </li>
+          <% } %>
+        </ul>
+      </section> -->
+    
+</body>
+<script src="/plz.js"></script>
+</html>
