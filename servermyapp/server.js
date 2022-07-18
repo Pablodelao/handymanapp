@@ -6,16 +6,78 @@ console.log("going live")
 
 //3. Declare variables
 const express = require("express")
-const app = express()
+const expressLayouts = require('express-ejs-layouts')
+const mongoose = require('mongoose')
+const flash = require('connect-flash')
+const session = require("express-session")
+const passport = require("passport")
+const app = express();
+
+//passport config
+require('./config/passport')(passport);
+
+//DB Config 2
+const db = require('./config/keys').MongoURI
+
+
+
+// Express body parser
+app.use(express.urlencoded({extended: true}))
+//express session middleware
+// Express session
+app.use(
+    session({
+      secret: 'secret',
+      resave: true,
+      saveUninitialized: true
+    })
+  );
+  
+
+  // Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+  //connect flash
+
+  app.use(flash())
+  //global vars
+  app.use(function(req, res, next) {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    next();
+  });
+
+
+// connect to mongo 2
+mongoose.connect(db, { useNewUrlParser: true})
+    .then(()=>console.log('Mongodb2 Connected...'))
+    .catch(err => console.log(err));
+
+// EJS
+app.use(expressLayouts);
+app.set('view engine', 'ejs');
+
 // added body parser
 const bodyParser = require('body-parser')
 
+
+
+
+
+
+
+
+
+
+
+// next thing
 const cors = require("cors")
 const { text, request } = require("express")
 const MongoClient = require("mongodb").MongoClient
 const connectionString = 'mongodb+srv://Elmega123:qyx4Ozr6LlUsU5g7@cluster0.ziids.mongodb.net/?retryWrites=true&w=majority'
 require('dotenv').config() 
-const PORT = 8000
+const PORT = process.env.PORT || 8000
 
 // Put in a dotenv file later
 MongoClient.connect(connectionString, { useUnifiedTopology: true })
@@ -25,6 +87,7 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
     const handymenCollection = db.collection('handymen')
     const jobPosts = db.collection('Job_posts')
 
+    app.use(expressLayouts);
     app.set('view engine','ejs')
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(express.static('public'))
@@ -39,6 +102,12 @@ MongoClient.connect(connectionString, { useUnifiedTopology: true })
 //         response.status(500).send({message: error.message})
 //     }
 // })
+
+//Routes
+//Routes
+
+
+
 app.get('/', async (request, response) => {
     try {
         handymenCollection.find({job: "Electrical" }).toArray()
@@ -50,6 +119,9 @@ app.get('/', async (request, response) => {
         response.status(500).send({message: error.message})
     }
 })
+
+
+
 
 
 app.get('/contact', async (request, response) => {
@@ -122,6 +194,29 @@ app.get('/postajob', async (request, response) => {
 
 app.get('/search', async (request, response) => {
     try {
+        console.log(globalVariable)
+        console.log(coordss)
+        handymenCollection.find({job:globalVariable}).toArray()
+        
+        .then(results => {
+            console.log(results)
+            // response.write(coordss)
+            // response.render(coordss)
+            // response.render('search.ejs', {quotes: results})
+            response.render('search.ejs', {
+                quotes: results,
+                sendcoords: coordss               
+                           })
+        })
+        
+    } catch (error) {
+        response.status(500).send({message: error.message})
+    }
+ 
+})
+
+app.get('/search1', async (request, response) => {
+    try {
         console.log("new")
         console.log(globalVariable)
         console.log(typeof(globalVariable))
@@ -129,7 +224,7 @@ app.get('/search', async (request, response) => {
         
         .then(results => {
             console.log(results)
-            response.render('search.ejs', {quotes: results})
+            response.render('search1.ejs', {quotes: results})
         })
         
         
@@ -137,23 +232,25 @@ app.get('/search', async (request, response) => {
     } catch (error) {
         response.status(500).send({message: error.message})
     }
-    // try {
-    //     response.render('index.ejs')
-    // } catch (error) {
-    //     response.status(500).send({message: error.message})
-    // }
+ 
 })
+let coordss = ""
+app.post('/coords',(request, responce) => {
+    console.log("pro player")
+    console.log(request.body);
+    coordss = request.body
+    responce.end()
+})
+
+
+
 
 var globalVariable;
 app.post('/searchh',(request,responce)=>{
     console.log("I got a request")
     console.log(request.body)
     globalVariable = request.body
-    console.log(globalVariable)
-    console.log(typeof(globalVariable))
     const strr = JSON.stringify(globalVariable)
-    console.log(strr)
-    console.log(typeof(strr))
     let result = strr.substring(8,)
     let resultt = result.replace('}', '')
     let resulttt = resultt.replace ('"', "")
@@ -181,6 +278,8 @@ app.post('/postajob', (req, res) => {
       })
       .catch(error => console.error(error))
   })
+app.use("/", require('./routes/index'));
+app.use('/users',require('./routes/users'))  
 
 
 app.post('/quotes', (req, res) => {
@@ -249,6 +348,9 @@ app.listen(process.env.PORT || PORT, () => {
   })
   .catch(error => console.error(error))
 
+
+
+  
 
 // app.listen(process.env.PORT || PORT, () => {
 //     console.log(`Server is running on port ${PORT}`)
