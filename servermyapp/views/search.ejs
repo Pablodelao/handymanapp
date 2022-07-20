@@ -52,26 +52,38 @@
                 
                 
                 //Array of markers
-                    var markers = [
+            var markers = [
             {
                 coords:{lat: 26.0710, lng:-98.3424 },
              iconImage:'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
-            content:"<h1> Mi casa</h1>", 
+            content:"<h1> Your location</h1> "
+
          },
-         {
-            coords:{lat: 26.0647, lng:-98.3116 },
-                content:"<h1> La canada</h1>", },
-          {
-             coords:{lat: 26.0928, lng:-98.2772 },
-                content:"<h1> parroquia</h1>",}
     ]
-                
-                
-                
-                //Loop through markers
-                for(var i = 0;i < markers.length;i++) {
+
+    getcoords();
+  async function getcoords(){
+    const responce = await fetch('/api');
+    const data2 = await responce.json();
+    console.log(typeof(data2[0].lat))
+
+    for (let index = 0; index <data2.length; index++) { 
+      markers.push({coords:{lat: Number(data2[index].lat),lng: Number(data2[index].long),},content: `<h1> ${data2[index].name}</h1>`})
+
+}
+
+console.log(markers)
+for(var i = 0;i < markers.length;i++) {
                     addMarker(markers[i]); //Add markers
                 }
+  }
+
+
+                              
+                //Loop through markers
+                // for(var i = 0;i < markers.length;i++) {
+                //     addMarker(markers[i]); //Add markers
+                // }
             
                 
                 
@@ -98,24 +110,6 @@
                     } 
                 }
             }
-
-
-
-          
-            // // Geolocation starts
-            // if ('geolocation' in navigator){
-            //     // geo location available
-            //     console.log("geolocation avaiable")
-            //     navigator.geolocation.getCurrentPosition(position=> {
-            //         console.log(position.coords.latitude)
-            //         console.log(position.coords.latitude)
-
-            //     })
-            //    }else{
-            //     // geolocation is not available
-            //     console.log("isn't avalable")
-            // }
-            
               
     </script>
     <script async
@@ -128,13 +122,33 @@
   <h2>Handymen that can get the job done</h2>
 
   
-  <ul class="quotes">
-    <% for(var i = 0; i < quotes.length; i++) {%>
-    <li class="quote">
-      <span><%= quotes[i].name %></span>:
-      <span><%= quotes[i].job %></span>
-    </li>
-    <% } %>
+ <script>
+  getData();
+  async function getData(){
+    const responce = await fetch('/api');
+    const data = await responce.json();
+
+    for (item of data){
+      const root = document.createElement('div')
+      const name = document.createElement('div')
+      const phone = document.createElement('div')
+      const location = document.createElement('div')
+      name.textContent = `name: ${item.name}`;
+      phone.textContent = `phone: ${item.Phone_number}`;
+      location.textContent = `location: ${item.location}`;
+
+      root.append(name,phone,location)
+      document.body.append(root)
+
+    }
+
+    console.log(data)
+
+  }
+ </script>
+
+
+
   </ul> -->
    <ul class="quotes">
     <% for(var i = 0; i < quotes.length; i++) {%>

@@ -73,7 +73,7 @@ const bodyParser = require('body-parser')
 
 // next thing
 const cors = require("cors")
-const { text, request } = require("express")
+const { text, request, response } = require("express")
 const MongoClient = require("mongodb").MongoClient
 const connectionString = 'mongodb+srv://Elmega123:qyx4Ozr6LlUsU5g7@cluster0.ziids.mongodb.net/?retryWrites=true&w=majority'
 require('dotenv').config() 
@@ -191,6 +191,25 @@ app.get('/postajob', async (request, response) => {
     //     response.status(500).send({message: error.message})
     // }
 })
+
+app.get('/api', (request,response) => {
+    try {
+        handymenCollection.find({job:globalVariable}).toArray()
+        .then(results => {
+            response.json(results)
+        })      
+    } catch (error) {
+        response.status(500).send({message: error.message})
+    }
+
+    // handymenCollection.find({job: globalVariable}.toArray(), (err,data) =>{
+    //     if (err) {
+    //         response.end()
+    //         return;
+    //     }
+    //     response.json(data);
+    // })
+});
 
 app.get('/search', async (request, response) => {
     try {
